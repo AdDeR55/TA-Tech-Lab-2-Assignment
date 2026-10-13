@@ -1,0 +1,4 @@
+08:00 System checks
+09:00 Help desk open
+10:00 Ticket triage
+11:00 Shift handover
