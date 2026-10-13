@@ -107,7 +107,6 @@ def expected_results(student_id):
     )
 
     category_counts = Counter(r.split('|')[2] for r in ticket_rows)
-
     tasklist_correct = source['evidence/tasklist-approved.txt']
 
     m_rows       = lines('mission/tickets.txt')
