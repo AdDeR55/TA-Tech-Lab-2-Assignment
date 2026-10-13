@@ -1,0 +1,14 @@
+﻿# Learner attempts — kept local, never pushed
+lab-work/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# macOS
+.DS_Store
+
+# Editor files
+*.swp
+*.swo
