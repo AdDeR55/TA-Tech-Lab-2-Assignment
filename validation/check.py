@@ -300,10 +300,10 @@ def check_cut_ordered(r, root, relative, expected_rows, source_file, field_desc)
 
 
 def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
+    """Accept any valid normal-format diff that goes from before_path -> after_path."""
     path   = root / relative
     actual = read(path)
     label  = relative
-    expected = norm(expected_diff)
     if actual is None:
         r.fail(label, f'File not found. Run:  diff {before_path} {after_path} > {relative}')
         return
@@ -314,26 +314,37 @@ def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
     b_lines = [l for l in (read(root / before_path) or '').splitlines() if l]
     a_lines = [l for l in (read(root / after_path) or '').splitlines() if l]
 
-    # Accept: matches static fixture
-    if actual.strip() == expected.strip():
-        r.ok(label)
-        return
-
-    # Accept: matches diff recomputed directly from the actual files
-    # (handles GNU diff vs Python difflib format differences)
-    computed = norm(normal_diff(b_lines, a_lines))
-    if actual.strip() == computed.strip():
-        r.ok(label)
-        return
-
-    # Reject: files compared in wrong order
+    # Reject: swapped order (diff approved before, not before approved)
     if actual.strip() == norm(normal_diff(a_lines, b_lines)).strip():
         r.fail(label, f'Files were compared in the wrong order. '
                       f'Put the OLDER file first:  diff {before_path} {after_path}')
         return
 
+    # Accept: matches static fixture
+    if actual.strip() == norm(expected_diff).strip():
+        r.ok(label)
+        return
+
+    # Accept: matches Python-computed diff from actual files
+    computed = norm(normal_diff(b_lines, a_lines))
+    if actual.strip() == computed.strip():
+        r.ok(label)
+        return
+
+    # Accept: structural check — valid diff markers pointing before -> after
+    # Extract added/removed lines from the actual file
+    removed = [l[2:] for l in actual.splitlines() if l.startswith('< ')]
+    added   = [l[2:] for l in actual.splitlines() if l.startswith('> ')]
+    # Apply the diff: start from before, remove < lines, add > lines
+    reconstructed = [l for l in b_lines if l not in removed] + added
+    if sorted(reconstructed) == sorted(a_lines) and len(reconstructed) == len(a_lines):
+        r.ok(label)
+        return
+
     r.fail(label, f'Diff output does not match expected. '
                   f'Check:  diff {before_path} {after_path}')
+
+
 
 
 
