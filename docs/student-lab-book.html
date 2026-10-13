@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campus IT Service Desk Handover Lab</title>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1a1a2e;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px 30px;
+}
+
+h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: #0f3460;
+    border-bottom: 3px solid #0f3460;
+    padding-bottom: 8px;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #16213e;
+    border-left: 4px solid #e94560;
+    padding-left: 10px;
+    margin-top: 30px;
+}
+
+h3 {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #0f3460;
+    margin-top: 18px;
+}
+
+code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9.5pt;
+    background: #f0f4f8;
+    border: 1px solid #d0dae8;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
+
+pre {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border-left: 4px solid #e94560;
+    border-radius: 4px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+pre code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9pt;
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    padding: 0;
+}
+
+blockquote {
+    background: #f0f7ff;
+    border-left: 4px solid #0f3460;
+    margin: 12px 0;
+    padding: 8px 14px;
+    border-radius: 0 4px 4px 0;
+    color: #333;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+    font-size: 10pt;
+}
+
+th {
+    background: #0f3460;
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    border: 1px solid #d0dae8;
+    padding: 5px 10px;
+}
+
+tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #e94560;
+    margin: 24px 0;
+}
+
+@media print {
+    h2 { page-break-before: auto; }
+    pre, table, blockquote { page-break-inside: avoid; }
+}
+
+@media print {
+  body { font-size:10.5pt; max-width:none; margin:15mm; }
+  h2   { page-break-before: auto; }
+  pre, table, blockquote { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<h1>Campus IT Service Desk Handover Lab</h1>
+<p><strong>Lab 2 — Terminal Tools  ·  Avenfield University IT Support Centre</strong></p>
+
+<hr>
+
+<h2>Scenario and Setup</h2>
+
+<h3>Your role</h3>
+
+<p>You are the incoming technician at Avenfield University's IT Support Centre.</p>
+<p>The outgoing shift left three problems in the records:</p>
+
+<ul>
+<li>The handover note has the <strong>wrong room and start time</strong> (copied from an old draft).</li>
+<li>The ticket ownership log has <strong>duplicate entries</strong> from a merged export.</li>
+<li>The working task list is the <strong>old version</strong>; the approved replacement was never applied.</li>
+</ul>
+
+<p>Your job is to inspect, repair and validate all three problems using seven terminal tools.</p>
+
+<h3>Tools covered</h3>
+
+<table>
+<tr><th>Exp</th><th>Tool</th><th>Skill</th></tr>
+<tr><td>1</td><td><code>history</code></td><td>Recall, search and reuse commands</td></tr>
+<tr><td>2</td><td><code>nano</code></td><td>Edit and create plain-text files</td></tr>
+<tr><td>3</td><td><code>less</code></td><td>Navigate long files; search by keyword</td></tr>
+<tr><td>4</td><td><code>sort</code></td><td>Sort lines alphabetically or numerically</td></tr>
+<tr><td>5</td><td><code>uniq</code></td><td>Remove duplicates; count groups</td></tr>
+<tr><td>6</td><td><code>cut</code></td><td>Extract fields from delimited records</td></tr>
+<tr><td>7</td><td><code>diff</code></td><td>Compare versions; guide repairs</td></tr>
+<tr><td>—</td><td>Mission</td><td>Integrate all seven tools on fresh evidence</td></tr>
+</table>
+
+<h3>Starting up</h3>
+
+<pre><code class="language-bash">
+bash start.sh
+</code></pre>
+
+<p>When prompted, <strong>enter your own name or student number</strong> as your ID.</p>
+<p>Use only letters, digits and hyphens — no spaces. Examples:</p>
+
+<pre><code>
+your-name        (e.g.  alex-smith)
+your-student-number   (e.g.  s1234567)
+student-demo     (if your instructor told you to use this)
+</code></pre>
+
+<p>Run the <code>cd</code> command that setup prints. <strong>Paste it exactly</strong> — do not type it by hand.</p>
+<p>Then confirm your location and read your identity file:</p>
+
+<pre><code class="language-bash">
+pwd
+cat identity.txt
+</code></pre>
+
+<p><code>identity.txt</code> contains four values. <strong>Write down ROOM and START</strong> — you will</p>
+<p>use them in Experiment 2.</p>
+
+<blockquote><strong>Rule:</strong> Begin every experiment from <code>lab-work/lab2-<your-id>/</code> (e.g. <code>lab-work/lab2-student-demo/</code>).</blockquote>
+<blockquote>Never edit files in <code>evidence/</code> or <code>mission/</code> — they are read-only originals.</blockquote>
+<blockquote>Redirect with <code>></code> always to a <em>different</em> file from the one you are reading.</blockquote>
+<blockquote><strong>Paste commands one at a time</strong> — do not paste multiple lines at once.</blockquote>
+
+<hr>
+
+<h2>Experiment 1 — history</h2>
+
+<p><code>history</code> prints a numbered list of every command you have run. You can filter</p>
+<p>it, jump back to an earlier command interactively, accept it for editing, or</p>
+<p>cancel without running it. This avoids retyping long commands and catches</p>
+<p>mistakes early.</p>
+
+<table>
+<tr><th>Command / key</th><th>Action</th></tr>
+<tr><td><code>history 10</code></td><td>Show the last 10 entries</td></tr>
+<tr><td>`history \</td><td>grep word`</td><td>Show only entries containing <em>word</em></td></tr>
+<tr><td><code>Ctrl+R</code></td><td>Open reverse search; type to find a match</td></tr>
+<tr><td><code>Ctrl+R</code> again</td><td>Jump to the next (older) match</td></tr>
+<tr><td><code>Right Arrow</code></td><td>Accept the found command for editing</td></tr>
+<tr><td><code>Enter</code></td><td>Accept and run immediately</td></tr>
+<tr><td><code>Ctrl+G</code></td><td>Cancel the search, return to empty prompt</td></tr>
+</table>
+
+<p><strong>1A — Build a history trail.</strong></p>
+<p>Run all three commands below. They create the trail you will search in 1B–1D.</p>
+
+<pre><code class="language-bash">
+grep SHIFT_ID identity.txt
+grep ROOM identity.txt
+grep START identity.txt
+</code></pre>
+
+<p>Note the values printed for ROOM and START.</p>
+
+<p><strong>1B — Print and filter.</strong></p>
+
+<pre><code class="language-bash">
+history 10
+history | grep grep
+</code></pre>
+
+<p>How many lines contain the word <code>grep</code>? What line number is the earliest?</p>
+
+<p><strong>1C — Ctrl+R search, accept and edit.</strong></p>
+<p>Press <code>Ctrl+R</code> and type <code>ROOM</code>. The shell shows <code>grep ROOM identity.txt</code>.</p>
+<p>Press <code>Ctrl+R</code> again to move to an older match.</p>
+<p>Press <code>Right Arrow</code> to bring the command to the prompt.</p>
+<p>Edit it to read <code>grep START identity.txt</code> and press <code>Enter</code>.</p>
+
+<p><strong>1D — Cancel a search.</strong></p>
+<p>Press <code>Ctrl+R</code>, start typing <code>sev</code>, then press <code>Ctrl+G</code>.</p>
+<p>Nothing runs. The prompt returns blank.</p>
+
+<blockquote><strong>Connection:</strong> The ROOM and START values from 1A are the corrections needed</blockquote>
+<blockquote>in Experiment 2.</blockquote>
+
+<hr>
+
+<h2>Experiment 2 — nano</h2>
+
+<p><code>nano</code> is a terminal text editor. Key shortcuts appear at the bottom of the screen.</p>
+<p><code>^</code> always means <code>Ctrl</code>.</p>
+
+<table>
+<tr><th>Key</th><th>Action</th></tr>
+<tr><td><code>Ctrl+O</code></td><td>Save (write out) — press <code>Enter</code> to confirm filename</td></tr>
+<tr><td><code>Ctrl+X</code></td><td>Exit</td></tr>
+<tr><td>Arrow keys</td><td>Move cursor</td></tr>
+</table>
+
+<p><strong>2A — Edit an existing file.</strong></p>
+
+<pre><code class="language-bash">
+nano work/handover-note.txt
+</code></pre>
+
+<p>The file has four lines. Two contain placeholder values:</p>
+
+<pre><code>
+Room: ITSD-00      ← replace with your ROOM value
+Start: 00:00       ← replace with your START value
+</code></pre>
+
+<p>Navigate with arrow keys. Replace both wrong values. Save with <code>Ctrl+O</code>, <code>Enter</code>.</p>
+<p>Exit with <code>Ctrl+X</code>.</p>
+
+<p><strong>2B — Reopen and verify.</strong></p>
+
+<pre><code class="language-bash">
+cat work/handover-note.txt
+nano work/handover-note.txt
+</code></pre>
+
+<p>Confirm both lines are correct, then exit with <code>Ctrl+X</code>.</p>
+
+<p><strong>2C — Create a new file.</strong></p>
+
+<pre><code class="language-bash">
+nano work/summary.txt
+</code></pre>
+
+<p>The file does not exist. nano opens an empty editor. Type one sentence</p>
+<p>describing the shift handover purpose. Save with <code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>.</p>
+
+<pre><code class="language-bash">
+cat work/summary.txt
+</code></pre>
+
+<blockquote><strong>Connection:</strong> The shift instruction in Experiment 3 confirms the room and</blockquote>
+<blockquote>time you just saved.</blockquote>
+
+<hr>
+
+<h2>Experiment 3 — less</h2>
+
+<p><code>less</code> displays a long file one screen at a time without modifying it.</p>
+
+<table>
+<tr><th>Key</th><th>Action</th></tr>
+<tr><td><code>Space</code></td><td>Forward one screen</td></tr>
+<tr><td><code>b</code></td><td>Backward one screen</td></tr>
+<tr><td><code>g</code> / <code>G</code></td><td>Jump to start / end</td></tr>
+<tr><td><code>/text</code> + <code>Enter</code></td><td>Search forward</td></tr>
+<tr><td><code>n</code> / <code>N</code></td><td>Next / previous match</td></tr>
+<tr><td><code>q</code></td><td>Quit</td></tr>
+</table>
+
+<p><strong>3A — Navigate.</strong></p>
+
+<pre><code class="language-bash">
+less evidence/incident-log.txt
+</code></pre>
+
+<p>Press <code>Space</code> several times, then <code>b</code>, then <code>G</code>, then <code>g</code>. Press <code>q</code> to quit.</p>
+
+<p><strong>3B — Search for your shift section.</strong></p>
+<p>Reopen the file. Type <code>/SHIFT LOG</code> and press <code>Enter</code>.</p>
+
+<ul>
+<li>First match: <strong>SHIFT LOG - ARCHIVED</strong> — outdated. Do not use it.</li>
+<li>Press <code>n</code> → <strong>SHIFT LOG - ACTIVE SHF-xxxxxx</strong> — verify the code matches</li>
+</ul>
+<p>  your SHIFT_ID from <code>identity.txt</code>. The next line is your shift instruction.</p>
+<ul>
+<li>Press <code>n</code> → <strong>SHIFT LOG - OTHER SHIFT</strong> — wrong shift. Press <code>N</code> to return to ACTIVE.</li>
+</ul>
+
+<p>Read the instruction line. Press <code>q</code>.</p>
+
+<p><strong>3C — Save the shift instruction.</strong></p>
+
+<pre><code class="language-bash">
+nano work/shift-instruction.txt
+</code></pre>
+
+<p>Type the exact sentence from the ACTIVE section. Save and exit.</p>
+<p>Verify the room and time match <code>work/handover-note.txt</code>.</p>
+
+<blockquote><strong>Connection:</strong> You now have the correct names and times confirmed from two</blockquote>
+<blockquote>independent sources. Experiments 4–5 work on the ticket ownership log.</blockquote>
+
+<hr>
+
+<h2>Experiment 4 — sort</h2>
+
+<p><code>sort</code> reads lines and writes them in order. By default the order is alphabetical.</p>
+
+<table>
+<tr><th>Flag</th><th>Meaning</th></tr>
+<tr><td><em>(none)</em></td><td>Alphabetical (text) sort, ascending</td></tr>
+<tr><td><code>-n</code></td><td>Numeric sort</td></tr>
+<tr><td><code>-nr</code></td><td>Numeric, descending (largest first)</td></tr>
+</table>
+
+<p><strong>4A — Alphabetical sort and save.</strong></p>
+
+<pre><code class="language-bash">
+sort evidence/ticket-owners.txt
+sort evidence/ticket-owners.txt &gt; work/owners-sorted.txt
+cat work/owners-sorted.txt
+</code></pre>
+
+<p>How many lines? (Answer: 8 — duplicates are preserved; sort does not remove them.)</p>
+
+<p><strong>4B — Text sort vs numeric sort.</strong></p>
+
+<pre><code class="language-bash">
+cat evidence/severity-scores.txt
+sort evidence/severity-scores.txt
+sort -n evidence/severity-scores.txt
+</code></pre>
+
+<p><strong>Observation:</strong> Why does text sort put <code>100</code> before <code>2</code>?</p>
+<p>Hint: text sort compares character by character. <code>1</code> comes before <code>2</code></p>
+<p>alphabetically, so <code>100</code> sorts before <code>2</code> regardless of its numeric value.</p>
+
+<p><strong>4C — Numeric descending and save.</strong></p>
+
+<pre><code class="language-bash">
+sort -nr evidence/severity-scores.txt &gt; work/scores-desc.txt
+cat work/scores-desc.txt
+</code></pre>
+
+<p>First line must be <code>100</code>; last line must be <code>2</code>.</p>
+
+<blockquote><strong>Connection:</strong> Experiment 5 uses <code>evidence/ticket-owners.txt</code> —</blockquote>
+<blockquote>the same file sorted here.</blockquote>
+
+<hr>
+
+<h2>Experiment 5 — uniq</h2>
+
+<p><code>uniq</code> removes <strong>adjacent</strong> duplicate lines. Lines that repeat but are not</p>
+<p>next to each other are left untouched. This means you must sort first.</p>
+
+<table>
+<tr><th>Flag</th><th>Meaning</th></tr>
+<tr><td><em>(none)</em></td><td>Remove adjacent duplicates</td></tr>
+<tr><td><code>-c</code></td><td>Prefix each unique line with its occurrence count</td></tr>
+</table>
+
+<p><strong>5A — Adjacent duplicates only.</strong></p>
+
+<pre><code class="language-bash">
+cat evidence/ticket-owners.txt
+uniq evidence/ticket-owners.txt
+</code></pre>
+
+<p>Count the output lines. Are all duplicates gone, or only some?</p>
+<p>Find two identical names on consecutive lines (adjacent) and two with other</p>
+<p>names between them (separated). <code>uniq</code> removes only the adjacent pair.</p>
+
+<p><strong>5B — Correct order: sort then uniq.</strong></p>
+
+<pre><code class="language-bash">
+sort evidence/ticket-owners.txt | uniq &gt; work/unique-owners.txt
+cat work/unique-owners.txt
+</code></pre>
+
+<p>How many lines? (Answer: 4 — all duplicates removed.)</p>
+
+<p><strong>5C — Wrong order comparison.</strong></p>
+<p>Predict what <code>uniq | sort</code> will produce. Then try it:</p>
+
+<pre><code class="language-bash">
+uniq evidence/ticket-owners.txt | sort
+</code></pre>
+
+<table>
+<tr><th>Command</th><th>Output lines</th><th>Duplicates?</th></tr>
+<tr><td>`uniq \</td><td>sort`</td><td>7</td><td>Yes — three names still repeat</td></tr>
+<tr><td>`sort \</td><td>uniq`</td><td>4</td><td>No</td></tr>
+</table>
+
+<p><code>uniq | sort</code> removes only the one adjacent pair first, then sorts — but</p>
+<p>the separated duplicates now sit next to each other <strong>after</strong> <code>uniq</code> has</p>
+<p>already finished. Always use <code>sort | uniq</code>.</p>
+
+<p><strong>5D — Count occurrences.</strong></p>
+
+<pre><code class="language-bash">
+sort evidence/ticket-owners.txt | uniq -c &gt; work/owner-counts.txt
+cat work/owner-counts.txt
+</code></pre>
+
+<p>Do the counts sum to 8? (They must — that is the total number of lines in the source file.)</p>
+
+<blockquote><strong>Connection:</strong> Experiment 6 extracts the same names from <code>evidence/tickets.txt</code>.</blockquote>
+
+<hr>
+
+<h2>Experiment 6 — cut</h2>
+
+<p><code>cut</code> extracts specific fields from each line of a delimited file.</p>
+<p>Field numbering starts at 1. <code>cut</code> preserves the original row order.</p>
+
+<table>
+<tr><th>Flag</th><th>Meaning</th></tr>
+<tr><td><code>-d "char"</code></td><td>Set the field delimiter</td></tr>
+<tr><td><code>-f N</code></td><td>Extract field N</td></tr>
+<tr><td><code>-f M,N</code></td><td>Extract fields M and N</td></tr>
+</table>
+
+<p><code>evidence/tickets.txt</code> uses <code>|</code> as a delimiter. Because <code>|</code> is a shell pipe</p>
+<p>character, it must be quoted. Each record has three fields:</p>
+
+<pre><code>
+T01|Name|Category
+</code></pre>
+
+<p><strong>6A — Extract owner names (field 2).</strong></p>
+
+<pre><code class="language-bash">
+cat evidence/tickets.txt
+cut -d "|" -f 2 evidence/tickets.txt &gt; work/ticket-owners-list.txt
+cat work/ticket-owners-list.txt
+</code></pre>
+
+<p>Compare the output to <code>evidence/ticket-owners.txt</code>.</p>
+<p>They should be identical — both files come from the same source export.</p>
+
+<p><strong>6B — Extract ID and category (fields 1 and 3).</strong></p>
+
+<pre><code class="language-bash">
+cut -d "|" -f 1,3 evidence/tickets.txt &gt; work/id-category.txt
+cat work/id-category.txt
+</code></pre>
+
+<p>The output delimiter is still <code>|</code> — <code>cut</code> cannot change it.</p>
+
+<p><strong>6C — Count tickets by category (full pipeline).</strong></p>
+
+<pre><code class="language-bash">
+cut -d "|" -f 3 evidence/tickets.txt | sort | uniq -c &gt; work/category-counts.txt
+cat work/category-counts.txt
+</code></pre>
+
+<ul>
+<li><code>cut</code> extracts the category field from each row.</li>
+<li><code>sort</code> groups identical categories together.</li>
+<li><code>uniq -c</code> counts each group.</li>
+</ul>
+
+<p>Do the counts sum to 8?</p>
+
+<blockquote><strong>Connection:</strong> Experiment 7 compares and repairs the task list —</blockquote>
+<blockquote>the final piece of evidence needed for the handover.</blockquote>
+
+<hr>
+
+<h2>Experiment 7 — diff</h2>
+
+<p><code>diff</code> compares two files line by line. Identical files produce no output.</p>
+<p>The first argument is always the <strong>older</strong> file; the second is the <strong>newer</strong> file.</p>
+
+<table>
+<tr><th>Marker</th><th>Meaning</th></tr>
+<tr><td><code>Nc,Nd</code></td><td>Lines N–N in file 1 <strong>c</strong>hanged or were <strong>d</strong>eleted</td></tr>
+<tr><td><code><</code></td><td>Line from file 1 (older)</td></tr>
+<tr><td><code>---</code></td><td>Separator between old and new</td></tr>
+<tr><td><code>></code></td><td>Line from file 2 (newer)</td></tr>
+<tr><td><code>c</code></td><td>Both sides changed (replaced)</td></tr>
+<tr><td><code>d</code></td><td>Line deleted from file 1</td></tr>
+<tr><td><code>a</code></td><td>Line added in file 2</td></tr>
+</table>
+
+<p><strong>7A — Identical files produce no output.</strong></p>
+<p>Predict: what does <code>diff</code> print when both arguments are the same file?</p>
+
+<pre><code class="language-bash">
+diff evidence/tasklist-approved.txt evidence/tasklist-approved.txt
+</code></pre>
+
+<p>No output confirms the files are identical. This is how you verify a repair.</p>
+
+<p><strong>7B — Compare before and approved versions.</strong></p>
+
+<pre><code class="language-bash">
+cat evidence/tasklist-before.txt
+cat evidence/tasklist-approved.txt
+diff evidence/tasklist-before.txt evidence/tasklist-approved.txt
+</code></pre>
+
+<p>You will see:</p>
+
+<pre><code>
+3,4c3,4
+&lt; 09:30 Ticket triage
+&lt; 10:00 Lunch cover
+---
+&gt; 10:00 Ticket triage
+&gt; 11:00 Shift handover
+</code></pre>
+
+<p><code>3,4c3,4</code> means lines 3–4 in file 1 were replaced by lines 3–4 in file 2.</p>
+<p><code><</code> shows the old lines; <code>></code> shows the approved replacements.</p>
+
+<p>Questions:</p>
+<li>How many lines changed?</li>
+<li>Which task had its time shifted?</li>
+<li>Which task was replaced entirely?</li>
+
+<p><strong>7C — Repair the working copy.</strong></p>
+
+<pre><code class="language-bash">
+nano work/tasklist.txt
+</code></pre>
+
+<p>Use the <code>></code> lines from the diff as your guide. Apply both changes.</p>
+<p>Save with <code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>. Verify:</p>
+
+<pre><code class="language-bash">
+diff work/tasklist.txt evidence/tasklist-approved.txt
+</code></pre>
+
+<p>No output means the repair is complete. If diff shows output, reopen nano,</p>
+<p>fix the remaining difference, and re-run.</p>
+
+<hr>
+
+<h2>Independent Mission</h2>
+
+<p>You have practised all seven tools. The mission uses a <strong>fresh set of evidence</strong></p>
+<p>in <code>mission/</code>. No step-by-step commands are given — apply what you have learned.</p>
+
+<h3>Deliverables</h3>
+
+<p>Produce these five files in <code>work/mission/</code>:</p>
+
+<table>
+<tr><th>File</th><th>Contents</th></tr>
+<tr><td><code>handover-note.txt</code></td><td>The corrected four-line handover note</td></tr>
+<tr><td><code>open-tickets.txt</code></td><td>Alphabetical list of distinct ticket owners</td></tr>
+<tr><td><code>category-counts.txt</code></td><td>Ticket count per category (`sort \</td><td>uniq -c` format)</td></tr>
+<tr><td><code>tasklist-diff.txt</code></td><td>Saved diff of old vs approved schedule</td></tr>
+<tr><td><code>tasklist.txt</code></td><td>Working schedule updated to match the approved version</td></tr>
+</table>
+
+<h3>Mission evidence (read-only)</h3>
+
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr><td><code>mission/brief.txt</code></td><td>Long briefing document — contains the approved handover note</td></tr>
+<tr><td><code>mission/tickets.txt</code></td><td>Pipe-delimited: `ID\</td><td>owner\</td><td>category`</td></tr>
+<tr><td><code>mission/schedule-before.txt</code></td><td>Old schedule</td></tr>
+<tr><td><code>mission/schedule-approved.txt</code></td><td>Approved schedule</td></tr>
+</table>
+
+<p>Working copies already exist in <code>work/mission/</code> (start from these).</p>
+
+<h3>Steps</h3>
+
+<p><strong>Step 0 — Survey your history.</strong></p>
+<p>Run <code>history 10</code>. You will see <code>diff</code>, <code>cut</code>, <code>sort</code>, <code>uniq</code> and <code>nano</code></p>
+<p>from Experiments 1–7. You will use <code>Ctrl+R</code> in Step 7 to recall one of them.</p>
+
+<p><strong>Step 1 — Find the approved handover note</strong> (<code>less</code>)</p>
+<p>Open <code>mission/brief.txt</code>. Search for <code>HANDOVER - APPROVED</code>.</p>
+<p>The brief contains a <code>HANDOVER - OLD</code> section — skip it.</p>
+<p>Find the section whose shift code matches your <code>identity.txt</code>. Below its</p>
+<p>instruction line are the four lines you need. Note them. Quit.</p>
+
+<p><strong>Step 2 — Repair the handover note</strong> (<code>nano</code>)</p>
+<p>Edit <code>work/mission/handover-note.txt</code>. Fix the Room and Start values.</p>
+<p>Save, exit, verify with <code>cat</code>.</p>
+
+<p><strong>Step 3 — List open ticket owners</strong> (<code>cut</code>, <code>sort</code>, <code>uniq</code>)</p>
+<p>From <code>mission/tickets.txt</code>, extract field 2, deduplicate and sort.</p>
+<p>Save to <code>work/mission/open-tickets.txt</code>.</p>
+
+<p><strong>Step 4 — Count tickets by category</strong> (<code>cut</code>, <code>sort</code>, <code>uniq -c</code>)</p>
+<p>From <code>mission/tickets.txt</code>, extract field 3, count each category.</p>
+<p>Save to <code>work/mission/category-counts.txt</code>.</p>
+
+<p><strong>Step 5 — Save the schedule comparison</strong> (<code>diff</code>)</p>
+<p>Compare <code>mission/schedule-before.txt</code> (first) and <code>mission/schedule-approved.txt</code>.</p>
+<p>Save to <code>work/mission/tasklist-diff.txt</code>.</p>
+
+<p>Read the saved file. What marker letters appear — <code>c</code>, <code>d</code> or <code>a</code>?</p>
+<p>Compare them to the markers in Experiment 7B. The mission schedule changed</p>
+<p>differently: one line was deleted (<code>d</code>) and one was added (<code>a</code>).</p>
+
+<p><strong>Step 6 — Repair the working schedule</strong> (<code>nano</code>, <code>diff</code>)</p>
+<p>Edit <code>work/mission/tasklist.txt</code> using the saved diff as your guide.</p>
+<p>Verify:</p>
+
+<pre><code class="language-bash">
+diff work/mission/tasklist.txt mission/schedule-approved.txt
+</code></pre>
+
+<p>No output means success.</p>
+
+<p><strong>Step 7 — Recall from history</strong> (<code>Ctrl+R</code>, <code>Right Arrow</code>)</p>
+<p>Press <code>Ctrl+R</code>, type <code>diff</code>. Step through matches until you find the</p>
+<p>verification diff from Step 6. Press <code>Right Arrow</code>. Edit the filenames</p>
+<p>to compare <code>mission/schedule-before.txt</code> against <code>mission/schedule-approved.txt</code></p>
+<p>again. Run it. The output should match <code>work/mission/tasklist-diff.txt</code>.</p>
+
+<hr>
+
+<h2>Validation</h2>
+
+<p>Run from your lab folder:</p>
+
+<pre><code class="language-bash">
+python3 ../../validation/check.py
+</code></pre>
+
+<table>
+<tr><th>Result</th><th>Meaning</th></tr>
+<tr><td><code>OK</code></td><td>File matches expected output</td></tr>
+<tr><td><code>FAIL</code></td><td>File is missing, wrong or malformed — a corrective command is shown</td></tr>
+</table>
+
+<p>Goal: all checks pass. Re-run after each fix.</p>
+
+<p>If <code>Original evidence files preserved</code> shows FAIL, you edited a file in</p>
+<p><code>evidence/</code> or <code>mission/</code>. Ask your instructor for a fresh attempt with a</p>
+<p>new ID.</p>
+
+<blockquote><code>history</code>, <code>nano</code> and <code>less</code> require a live demonstration.</blockquote>
+<blockquote>A full checker pass does not replace the instructor walkthrough.</blockquote>
+
+<hr>
+
+<h2>Command Quick Reference</h2>
+
+<pre><code class="language-bash">
+# Setup
+bash start.sh                            # create your attempt
+cat identity.txt                         # view your shift details
+
+# history
+history 10                               # last 10 commands
+history | grep word                      # filter by keyword
+Ctrl+R  →  type  →  Ctrl+R              # reverse search
+Right Arrow                              # accept match for editing
+Ctrl+G                                   # cancel search
+
+# nano
+nano filename                            # open or create
+Ctrl+O  Enter                            # save
+Ctrl+X                                   # exit
+
+# less
+less filename                            # open for reading
+Space / b                                # forward / backward
+g / G                                    # start / end
+/text  Enter  →  n / N                  # search, next, previous
+q                                        # quit
+
+# sort
+sort file &gt; output                       # alphabetical, save
+sort -n file                             # numeric
+sort -nr file &gt; output                   # numeric descending, save
+
+# uniq
+sort file | uniq &gt; output               # distinct lines
+sort file | uniq -c &gt; output            # count groups
+
+# cut
+cut -d "|" -f 2 file &gt; output          # extract field 2
+cut -d "|" -f 1,3 file &gt; output        # extract fields 1 and 3
+cut -d "|" -f 3 file | sort | uniq -c &gt; output
+
+# diff
+diff before.txt after.txt               # compare (older file first)
+diff before.txt after.txt &gt; saved.txt   # save comparison
+
+# checker  (run from inside your lab folder)
+python3 ../../validation/check.py        # e.g. from lab-work/lab2-student-demo/
+
+# reset (if needed — replace student-demo with your own ID)
+bash ../../scripts/reset_work.sh student-demo   # prompts for yes; never touches evidence/
+</code></pre>
+
+</body>
+</html>
