@@ -320,11 +320,17 @@ def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
                       f'Put the OLDER file first:  diff {before_path} {after_path}')
         return
 
-    # Accept: contains at least one < or > marker (valid diff format)
+    # Accept any recognised diff format: normal (< >), unified (--- +++), context (*** ---)
     lines = actual.splitlines()
-    has_markers = any(l.startswith('< ') or l.startswith('> ') for l in lines)
+    has_markers = any(
+        l.startswith('< ') or l.startswith('> ')   # normal format
+        or l.startswith('--- ') or l.startswith('+++ ')  # unified format
+        or l.startswith('*** ')                     # context format
+        or (l and l[0] in '0123456789')             # hunk header line
+        for l in lines
+    )
     if not has_markers:
-        r.fail(label, f'No diff markers found. Run:  diff {before_path} {after_path} > {relative}')
+        r.fail(label, f'No diff output found. Run:  diff {before_path} {after_path} > {relative}')
         return
 
     # The outcome (work/mission/tasklist.txt) is verified separately by check_exact.
