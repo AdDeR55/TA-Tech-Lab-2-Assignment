@@ -310,26 +310,32 @@ def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
     if not actual.strip():
         r.fail(label, f'File is empty. Did you use  >  to save the diff output?')
         return
-    if actual.strip() == expected.strip():
-        # Verify marker types
-        markers = set()
-        for line in actual.splitlines():
-            if line and line[0].isdigit():
-                for ch in line:
-                    if ch in 'cda':
-                        markers.add(ch)
-                        break
-        r.ok(label)
-        return
-    # Check swapped order
+
     b_lines = [l for l in (read(root / before_path) or '').splitlines() if l]
     a_lines = [l for l in (read(root / after_path) or '').splitlines() if l]
+
+    # Accept: matches static fixture
+    if actual.strip() == expected.strip():
+        r.ok(label)
+        return
+
+    # Accept: matches diff recomputed directly from the actual files
+    # (handles GNU diff vs Python difflib format differences)
+    computed = norm(normal_diff(b_lines, a_lines))
+    if actual.strip() == computed.strip():
+        r.ok(label)
+        return
+
+    # Reject: files compared in wrong order
     if actual.strip() == norm(normal_diff(a_lines, b_lines)).strip():
         r.fail(label, f'Files were compared in the wrong order. '
                       f'Put the OLDER file first:  diff {before_path} {after_path}')
         return
+
     r.fail(label, f'Diff output does not match expected. '
                   f'Check:  diff {before_path} {after_path}')
+
+
 
 
 def check_evidence_preserved(r, root, source):
