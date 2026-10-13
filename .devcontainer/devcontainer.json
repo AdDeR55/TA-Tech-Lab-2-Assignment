@@ -1,0 +1,36 @@
+﻿{
+  "name": "Campus IT Service Desk Handover Lab",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": false,
+      "upgradePackages": false
+    }
+  },
+
+  "onCreateCommand": "apt-get update -qq && apt-get install -y -qq nano less python3 coreutils diffutils grep 2>/dev/null && echo 'Tools installed.'",
+
+  "postStartCommand": "bash -c 'echo \"Lab environment ready. Run: bash start.sh\" && bash scripts/verify_environment.sh 2>/dev/null || true'",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.wordWrap": "on",
+        "workbench.activityBar.visible": false,
+        "workbench.statusBar.visible": true,
+        "editor.minimap.enabled": false,
+        "chat.editor.enabled": false,
+        "github.copilot.enable": {
+          "*": false
+        }
+      },
+      "extensions": []
+    }
+  },
+
+  "remoteUser": "vscode"
+}
