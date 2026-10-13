@@ -1,16 +1,4 @@
 ﻿#!/usr/bin/env bash
-# reset_work.sh — Reset working files for a named lab attempt.
-#
-# SAFETY RULES
-#   - Never touches evidence/ or mission/ (original evidence).
-#   - Never touches lab-work/ folders for any OTHER student ID.
-#   - Does nothing by default — requires explicit confirmation.
-#   - Prints exactly what it will delete before asking.
-#
-# Usage:
-#   bash scripts/reset_work.sh <student-id>
-#
-# Run from the repository root.
 set -e
 cd "$(dirname "$0")/.."
 

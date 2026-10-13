@@ -14,7 +14,6 @@ import shlex
 import sys
 from pathlib import Path
 
-
 def _bash_path(p):
     """Return a shell-safe cd argument.
 
@@ -22,22 +21,16 @@ def _bash_path(p):
     E:\\Foo\\Bar to /e/Foo/Bar so the printed cd command works without quoting.
     Elsewhere (Linux, macOS, Codespace) use shlex.quote as before.
     """
-    if os.environ.get('MSYSTEM'):            # Git Bash sets MSYSTEM=MINGW64 etc.
+    if os.environ.get('MSYSTEM'):
         posix = str(p).replace('\\', '/')
         if len(posix) >= 2 and posix[1] == ':':
             posix = '/' + posix[0].lower() + posix[2:]
         return posix
     return shlex.quote(str(p))
 
-
-# ── ID validation ──────────────────────────────────────────────────────────────
-
 def valid_id(value):
     """1–24 ASCII letters/digits/hyphens/underscores, starting with letter/digit."""
     return re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,23}', value) is not None
-
-
-# ── Data generation ────────────────────────────────────────────────────────────
 
 def make_data(student_id):
     """Return a dict of {relative_path: text_content} for the given student ID.
@@ -50,11 +43,9 @@ def make_data(student_id):
             'Use 1–24 letters/digits, hyphens or underscores; begin with a letter/digit.'
         )
 
-    # Seed derived from SHA-256 of the ID
     digest = hashlib.sha256(student_id.encode()).hexdigest()
     seed   = int(digest[:8], 16)
 
-    # ── Identity values ────────────────────────────────────────────────────────
     shift_code = 'SHF-' + digest[:6].upper()
     room       = 'ITSD-' + str(1 + seed % 6)
     start_time = ['08:30', '09:00', '09:30'][seed % 3]
@@ -63,27 +54,17 @@ def make_data(student_id):
         f'Report to {desk} in {room} at {start_time} for the shift briefing.'
     )
 
-    # ── Staff name pools ───────────────────────────────────────────────────────
-    # Experiment pool (4 names rotated by seed)
     exp_base = ['Bea', 'Cris', 'Elan', 'Juno']
     e_off    = seed % 4
-    N        = exp_base[e_off:] + exp_base[:e_off]   # N[0]..N[3]
+    N        = exp_base[e_off:] + exp_base[:e_off]
     technician = N[0]
 
-    # Mission pool (3 names rotated separately)
     miss_base = ['Kofi', 'Priya', 'Sona']
     m_off     = seed % 3
-    M         = miss_base[m_off:] + miss_base[:m_off]  # M[0]..M[2]
+    M         = miss_base[m_off:] + miss_base[:m_off]
 
-    # ── evidence/ticket-owners.txt ─────────────────────────────────────────────
-    # Pattern: N0 N1 N1 N2 N0 N3 N0 N1
-    # · N1 at positions 2–3 → adjacent duplicate
-    # · N0 at positions 1, 5, 7 → separated duplicates
-    # · N1 at positions 2, 3, 8 → adjacent + separated
     owners = [N[0], N[1], N[1], N[2], N[0], N[3], N[0], N[1]]
 
-    # ── evidence/tickets.txt ──────────────────────────────────────────────────
-    # Same owner order; field 2 of this file == ticket-owners.txt (teaching link)
     ticket_cats = [
         'Network', 'Hardware', 'Network', 'Access',
         'Software', 'Hardware', 'Network', 'Software',
@@ -92,11 +73,8 @@ def make_data(student_id):
         f'T{i+1:02d}|{owners[i]}|{ticket_cats[i]}' for i in range(len(owners))
     ]
 
-    # ── evidence/severity-scores.txt (fixed — same for all students) ───────────
     scores = ['35', '100', '2', '12', '7']
 
-    # ── evidence/tasklist-before.txt and tasklist-approved.txt ────────────────
-    # Changes: line 3 time shifted (c); line 4 replaced (c)
     tasklist_before   = (
         '08:00 System checks\n'
         '09:00 Help desk open\n'
@@ -110,7 +88,6 @@ def make_data(student_id):
         '11:00 Shift handover\n'
     )
 
-    # ── evidence/incident-log.txt (110 lines) ─────────────────────────────────
     log = [f'{i:03d} Routine IT support log entry {i}.' for i in range(1, 111)]
     log[12:15] = [
         'SHIFT LOG - ARCHIVED',
@@ -128,7 +105,6 @@ def make_data(student_id):
         'This record applies to a different shift.',
     ]
 
-    # ── Handover note draft (deliberately wrong Room and Start) ───────────────
     handover_draft = (
         f'Shift: {shift_code}\n'
         f'Room: ITSD-00\n'
@@ -136,9 +112,6 @@ def make_data(student_id):
         f'Bring your access card.\n'
     )
 
-    # ── mission/tickets.txt ────────────────────────────────────────────────────
-    # Pattern: M1 M0 M1 M2 M0 M1 M2 M0
-    # Distinct names (3); separated duplicates throughout
     m_owners = [M[1], M[0], M[1], M[2], M[0], M[1], M[2], M[0]]
     m_cats   = [
         'Software', 'Network', 'Hardware', 'Software',
@@ -148,8 +121,6 @@ def make_data(student_id):
         f'R{i+1:02d}|{m_owners[i]}|{m_cats[i]}' for i in range(len(m_owners))
     ]
 
-    # ── mission/schedule files (fixed) ────────────────────────────────────────
-    # Changes: line 3 deleted (d); line 4 added at end (a)
     schedule_before   = (
         '10:00 Briefing\n'
         '10:30 Account setup\n'
@@ -163,11 +134,9 @@ def make_data(student_id):
         '12:00 Sign-off\n'
     )
 
-    # ── mission/brief.txt (90 lines) ──────────────────────────────────────────
     brief = [
         f'{i:03d} Shift handover preparation note {i}.' for i in range(1, 91)
     ]
-    # HANDOVER-OLD at lines 16–20 (indices 15–20)
     brief[15:20] = [
         'HANDOVER - OLD',
         'Shift: SHF-000000',
@@ -175,7 +144,6 @@ def make_data(student_id):
         'Start: 00:00',
         'Do not use this archived notice.',
     ]
-    # HANDOVER-APPROVED at lines 63–68 (indices 62–68)
     brief[62:68] = [
         f'HANDOVER - APPROVED {shift_code}',
         'Use these four lines for the final handover note:',
@@ -185,41 +153,30 @@ def make_data(student_id):
         'Bring your access card.',
     ]
 
-    # ── File dictionary ────────────────────────────────────────────────────────
-    # Keys are paths relative to the student attempt folder.
-    # Files in evidence/ and mission/ are immutable originals.
-    # Files in work/ are the learner's editable copies.
     files = {
-        # Identity
         'identity.txt': (
             f'SHIFT_ID={shift_code}\n'
             f'TECHNICIAN={technician}\n'
             f'ROOM={room}\n'
             f'START={start_time}\n'
         ),
-        # Immutable evidence (never edit these)
         'evidence/ticket-owners.txt':    '\n'.join(owners) + '\n',
         'evidence/severity-scores.txt':  '\n'.join(scores) + '\n',
         'evidence/tickets.txt':          '\n'.join(tickets) + '\n',
         'evidence/tasklist-before.txt':  tasklist_before,
         'evidence/tasklist-approved.txt': tasklist_approved,
         'evidence/incident-log.txt':     '\n'.join(log) + '\n',
-        # Immutable mission evidence (never edit these)
         'mission/brief.txt':             '\n'.join(brief) + '\n',
         'mission/handover-draft.txt':    handover_draft,
         'mission/tickets.txt':           '\n'.join(mission_tickets) + '\n',
         'mission/schedule-before.txt':   schedule_before,
         'mission/schedule-approved.txt': schedule_approved,
-        # Learner working copies (edit these — never touch evidence/ or mission/)
         'work/handover-note.txt':         handover_draft,
         'work/tasklist.txt':              tasklist_before,
         'work/mission/handover-note.txt': handover_draft,
         'work/mission/tasklist.txt':      schedule_before,
     }
     return files
-
-
-# ── Folder operations ──────────────────────────────────────────────────────────
 
 def write_files(files, destination):
     """Write all files to destination directory. Parent dirs created as needed.
@@ -233,11 +190,9 @@ def write_files(files, destination):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content.encode('utf-8'))
 
-
 def work_files(files):
     """Return only the work/ subset of a files dict."""
     return {k: v for k, v in files.items() if k.startswith('work/')}
-
 
 def create_attempt(student_id, lab_root):
     """Create a new attempt folder. Raises FileExistsError if it already exists."""
@@ -245,10 +200,9 @@ def create_attempt(student_id, lab_root):
     destination = Path(lab_root) / ('lab2-' + student_id)
     if destination.is_symlink():
         raise OSError('This path is a symbolic link. Ask your instructor for a new ID.')
-    destination.mkdir(parents=True, exist_ok=False)   # raises FileExistsError if exists
+    destination.mkdir(parents=True, exist_ok=False)
     write_files(files, destination)
     return destination
-
 
 def reset_work_only(student_id, lab_root):
     """Delete and regenerate only work/ inside an existing attempt."""
@@ -263,18 +217,13 @@ def reset_work_only(student_id, lab_root):
     write_files(work_files(files), destination)
     return destination
 
-
-# ── CLI ────────────────────────────────────────────────────────────────────────
-
 def lab_root_from_script():
     """lab-work/ sibling to the directory containing this script."""
     return Path(__file__).resolve().parent / 'lab-work'
 
-
 def main():
     lab_root = lab_root_from_script()
 
-    # --reset-work <ID> mode
     if len(sys.argv) == 3 and sys.argv[1] == '--reset-work':
         student_id = sys.argv[2].strip()
         if not valid_id(student_id):
@@ -295,7 +244,6 @@ def main():
             sys.exit(f'Reset failed: {exc}')
         return
 
-    # Normal setup mode
     student_id = input(
         'Enter your instructor-assigned lab ID (not your email): '
     ).strip()
@@ -322,7 +270,6 @@ def main():
     print('\nMove into your lab folder with this exact command:')
     print('  cd ' + _bash_path(dest))
 
-    # Print a quick-reference identity table right away
     id_path = dest / 'identity.txt'
     if id_path.exists():
         id_data = dict(
@@ -341,8 +288,6 @@ def main():
     print('\nThen run:')
     print('  pwd')
     print('\nFollow the student lab book. No commands have been added to your shell history.')
-
-
 
 if __name__ == '__main__':
     main()

@@ -36,7 +36,7 @@ body {
     font-family: 'Inter', 'Helvetica Neue', sans-serif;
     font-size: 11pt;
     line-height: 1.6;
-    color: #1a1a2e;
+    color:
     max-width: 700px;
     margin: 0 auto;
     padding: 20px 30px;
@@ -45,8 +45,8 @@ body {
 h1 {
     font-size: 20pt;
     font-weight: 700;
-    color: #0f3460;
-    border-bottom: 3px solid #0f3460;
+    color:
+    border-bottom: 3px solid
     padding-bottom: 8px;
     margin-top: 0;
 }
@@ -54,8 +54,8 @@ h1 {
 h2 {
     font-size: 14pt;
     font-weight: 700;
-    color: #16213e;
-    border-left: 4px solid #e94560;
+    color:
+    border-left: 4px solid
     padding-left: 10px;
     margin-top: 30px;
 }
@@ -63,23 +63,23 @@ h2 {
 h3 {
     font-size: 11pt;
     font-weight: 600;
-    color: #0f3460;
+    color:
     margin-top: 18px;
 }
 
 code {
     font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 9.5pt;
-    background: #f0f4f8;
-    border: 1px solid #d0dae8;
+    background:
+    border: 1px solid
     border-radius: 3px;
     padding: 1px 4px;
 }
 
 pre {
-    background: #1a1a2e;
-    color: #e0e0e0;
-    border-left: 4px solid #e94560;
+    background:
+    color:
+    border-left: 4px solid
     border-radius: 4px;
     padding: 12px 16px;
     overflow-x: auto;
@@ -91,17 +91,17 @@ pre code {
     font-size: 9pt;
     background: none;
     border: none;
-    color: #e0e0e0;
+    color:
     padding: 0;
 }
 
 blockquote {
-    background: #f0f7ff;
-    border-left: 4px solid #0f3460;
+    background:
+    border-left: 4px solid
     margin: 12px 0;
     padding: 8px 14px;
     border-radius: 0 4px 4px 0;
-    color: #333;
+    color:
 }
 
 table {
@@ -112,25 +112,25 @@ table {
 }
 
 th {
-    background: #0f3460;
-    color: #fff;
+    background:
+    color:
     padding: 6px 10px;
     text-align: left;
     font-weight: 600;
 }
 
 td {
-    border: 1px solid #d0dae8;
+    border: 1px solid
     padding: 5px 10px;
 }
 
 tr:nth-child(even) td {
-    background: #f8fafc;
+    background:
 }
 
 hr {
     border: none;
-    border-top: 2px solid #e94560;
+    border-top: 2px solid
     margin: 24px 0;
 }
 
@@ -139,7 +139,6 @@ hr {
     pre, table, blockquote { page-break-inside: avoid; }
 }
 """
-
 
 def build_html(md_text):
     """Convert markdown text to a full HTML document string."""
@@ -150,7 +149,6 @@ def build_html(md_text):
             extensions=['tables', 'fenced_code', 'codehilite'],
         )
     except ImportError:
-        # Minimal fallback — pre-wrap the markdown
         body = f'<pre style="white-space:pre-wrap">{md_text}</pre>'
         print('  (markdown package not found — HTML output is plain text)')
     return f"""<!DOCTYPE html>
@@ -166,7 +164,6 @@ def build_html(md_text):
 </body>
 </html>
 """
-
 
 def try_pandoc():
     """Try to build PDF with pandoc. Returns True on success."""
@@ -188,7 +185,6 @@ def try_pandoc():
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         pass
-    # Try with xelatex
     try:
         subprocess.run(
             [
@@ -206,7 +202,6 @@ def try_pandoc():
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         pass
-    # Try default engine
     try:
         subprocess.run(
             ['pandoc', str(SRC_MD), '--output', str(PDF), '--standalone'],
@@ -215,7 +210,6 @@ def try_pandoc():
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
-
 
 def try_weasyprint(html_text):
     """Try to build PDF with weasyprint. Returns True on success."""
@@ -229,7 +223,6 @@ def try_weasyprint(html_text):
         print(f'  weasyprint failed: {exc}')
         return False
 
-
 def main():
     if not SRC_MD.exists():
         sys.exit(f'Source not found: {SRC_MD}\nRun from the repository root.')
@@ -237,7 +230,6 @@ def main():
     md_text = SRC_MD.read_text(encoding='utf-8')
     html_text = build_html(md_text)
 
-    # Write CSS for pandoc
     (ROOT / 'lab-book' / '_style.css').write_text(CSS, encoding='utf-8')
 
     print('Building lab-book/campus-it-handover-lab.pdf ...')
@@ -263,7 +255,6 @@ def main():
     print()
     print('To install weasyprint:')
     print('  pip install markdown weasyprint')
-
 
 if __name__ == '__main__':
     main()

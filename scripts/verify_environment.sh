@@ -1,6 +1,4 @@
 ﻿#!/usr/bin/env bash
-# verify_environment.sh — Check that all required tools are present.
-# Run from the repository root.  Exit 0 = all tools found; exit 1 = missing.
 set -e
 OK=0
 MISSING=()
@@ -36,7 +34,6 @@ else
   echo "Install them before running the lab."
 fi
 
-# Quick smoke test: generate and check a temp attempt
 echo ""
 echo "=== Smoke test (temporary attempt) ==="
 TMPID="smoke-$$"

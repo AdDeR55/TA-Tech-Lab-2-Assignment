@@ -21,10 +21,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-# ── Locate project root and import setup ──────────────────────────────────────
-
-_HERE     = Path(__file__).resolve().parent          # .../validation/
-_ROOT     = _HERE.parent                              # .../campus-it-handover-lab/
+_HERE     = Path(__file__).resolve().parent
+_ROOT     = _HERE.parent
 _FIXTURES = _HERE / 'expected'
 
 sys.path.insert(0, str(_ROOT))
@@ -36,13 +34,9 @@ except ImportError:
         'campus-it-handover-lab? Run from lab-work/lab2-<ID>/ as shown above.'
     )
 
-
-# ── Helpers ───────────────────────────────────────────────────────────────────
-
 def norm(text):
     """Normalise CRLF -> LF for cross-platform comparison."""
     return text.replace('\r\n', '\n').replace('\r', '\n')
-
 
 def read(path):
     """Read a file, return normalised text or None on error."""
@@ -50,7 +44,6 @@ def read(path):
         return norm(path.read_bytes().decode('utf-8'))
     except (OSError, UnicodeError):
         return None
-
 
 def fixture(name):
     """Read a fixture file and return normalised text. Abort if missing."""
@@ -62,7 +55,6 @@ def fixture(name):
             'The validation/expected/ folder must be present in the repository.'
         )
     return content
-
 
 def parse_counter(text):
     """
@@ -92,7 +84,6 @@ def parse_counter(text):
         result[name] = count
     return result, None
 
-
 def is_sorted(lst, key=str.lower, reverse=False):
     """Return (True, None) if sorted; (False, message) otherwise."""
     for i in range(len(lst) - 1):
@@ -105,7 +96,6 @@ def is_sorted(lst, key=str.lower, reverse=False):
                 return False, f"'{lst[i]}' should come before '{lst[i+1]}'"
     return True, None
 
-
 def has_duplicates(lst):
     seen = set()
     for item in lst:
@@ -113,7 +103,6 @@ def has_duplicates(lst):
             return item
         seen.add(item)
     return None
-
 
 def normal_diff(a, b):
     """Generate GNU-style normal diff output from two line lists."""
@@ -135,9 +124,6 @@ def normal_diff(a, b):
         else:
             out += [str(i) + 'a' + span(k, l)] + ['> ' + v for v in b[k:l]]
     return '\n'.join(out) + '\n' if out else ''
-
-
-# ── Result collector ──────────────────────────────────────────────────────────
 
 class Results:
     def __init__(self):
@@ -166,9 +152,6 @@ class Results:
         total  = len(self._items)
         return passed, total
 
-
-# ── Per-file check functions ──────────────────────────────────────────────────
-
 def check_exact(r, root, relative, expected_text, hint=''):
     path   = root / relative
     actual = read(path)
@@ -191,7 +174,6 @@ def check_exact(r, root, relative, expected_text, hint=''):
         return
     r.fail(label, 'Content differs from expected.')
 
-
 def check_nonempty(r, root, relative):
     path   = root / relative
     actual = read(path)
@@ -203,7 +185,6 @@ def check_nonempty(r, root, relative):
         r.ok(label)
     else:
         r.fail(label, 'File exists but is empty. Open with nano and write at least one sentence.')
-
 
 def check_sorted_names(r, root, relative, expected_sorted, source_file):
     path   = root / relative
@@ -228,7 +209,6 @@ def check_sorted_names(r, root, relative, expected_sorted, source_file):
         return
     r.ok(label)
 
-
 def check_unique_sorted(r, root, relative, expected_unique, source_file):
     path   = root / relative
     actual = read(path)
@@ -251,7 +231,6 @@ def check_unique_sorted(r, root, relative, expected_unique, source_file):
         r.fail(label, f'Wrong set of names. Check source file and pipeline.')
         return
     r.ok(label)
-
 
 def check_counter(r, root, relative, expected_counter, total, source_file, field=None):
     path   = root / relative
@@ -278,7 +257,6 @@ def check_counter(r, root, relative, expected_counter, total, source_file, field
         return
     r.ok(label)
 
-
 def check_cut_ordered(r, root, relative, expected_rows, source_file, field_desc):
     path   = root / relative
     actual = read(path)
@@ -298,7 +276,6 @@ def check_cut_ordered(r, root, relative, expected_rows, source_file, field_desc)
             return
     r.ok(label)
 
-
 def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
     """Verify the student captured a valid diff from before_path -> after_path."""
     path   = root / relative
@@ -314,30 +291,24 @@ def check_diff_file(r, root, relative, expected_diff, before_path, after_path):
     b_lines = [l for l in (read(root / before_path) or '').splitlines() if l.strip()]
     a_lines = [l for l in (read(root / after_path) or '').splitlines() if l.strip()]
 
-    # Reject: swapped order
     if actual.strip() == norm(normal_diff(a_lines, b_lines)).strip():
         r.fail(label, f'Files were compared in the wrong order. '
                       f'Put the OLDER file first:  diff {before_path} {after_path}')
         return
 
-    # Accept any recognised diff format: normal (< >), unified (--- +++), context (*** ---)
     lines = actual.splitlines()
     has_markers = any(
-        l.startswith('< ') or l.startswith('> ')   # normal format
-        or l.startswith('--- ') or l.startswith('+++ ')  # unified format
-        or l.startswith('*** ')                     # context format
-        or (l and l[0] in '0123456789')             # hunk header line
+        l.startswith('< ') or l.startswith('> ')
+        or l.startswith('--- ') or l.startswith('+++ ')
+        or l.startswith('*** ')
+        or (l and l[0] in '0123456789')
         for l in lines
     )
     if not has_markers:
         r.fail(label, f'No diff output found. Run:  diff {before_path} {after_path} > {relative}')
         return
 
-    # The outcome (work/mission/tasklist.txt) is verified separately by check_exact.
     r.ok(label)
-
-
-
 
 def check_evidence_preserved(r, root, source):
     failed = []
@@ -356,9 +327,6 @@ def check_evidence_preserved(r, root, source):
                '. Evidence files must not be edited. Ask instructor for a new attempt.')
     else:
         r.ok('Original evidence files preserved')
-
-
-# ── Main validation ───────────────────────────────────────────────────────────
 
 def validate(lab_root, student_id):
     lab_root = Path(lab_root)
@@ -405,24 +373,20 @@ def validate(lab_root, student_id):
 
     groups = []
 
-    # Exp 1 — history (interactive)
     r = Results()
     r.ok('history', 'interactive — demonstrate live (history 10, pipe|grep, Ctrl+R, Ctrl+G)')
     groups.append(('Experiment 1  history [interactive]', r))
 
-    # Exp 2 — nano
     r = Results()
     check_exact(r, lab_root, 'work/handover-note.txt', handover_correct)
     check_nonempty(r, lab_root, 'work/summary.txt')
     groups.append(('Experiment 2  nano', r))
 
-    # Exp 3 — less
     r = Results()
     r.ok('less navigation', 'interactive — demonstrate live (Space, b, g, G, /search, n, N, q)')
     check_exact(r, lab_root, 'work/shift-instruction.txt', shift_instruction)
     groups.append(('Experiment 3  less [interactive + file]', r))
 
-    # Exp 4 — sort
     r = Results()
     check_sorted_names(r, lab_root, 'work/owners-sorted.txt', owners_sorted,
                        'evidence/ticket-owners.txt')
@@ -430,7 +394,6 @@ def validate(lab_root, student_id):
                 'Fixture: validation/expected/scores-desc.txt')
     groups.append(('Experiment 4  sort', r))
 
-    # Exp 5 — uniq
     r = Results()
     check_unique_sorted(r, lab_root, 'work/unique-owners.txt', unique_owners,
                         'evidence/ticket-owners.txt')
@@ -438,7 +401,6 @@ def validate(lab_root, student_id):
                   'evidence/ticket-owners.txt')
     groups.append(('Experiment 5  uniq', r))
 
-    # Exp 6 — cut
     r = Results()
     check_cut_ordered(r, lab_root, 'work/ticket-owners-list.txt',
                       ticket_owner_list, 'evidence/tickets.txt', '2')
@@ -448,13 +410,11 @@ def validate(lab_root, student_id):
                   'evidence/tickets.txt', field='3')
     groups.append(('Experiment 6  cut', r))
 
-    # Exp 7 — diff
     r = Results()
     check_exact(r, lab_root, 'work/tasklist.txt', fix_tasklist_appr,
                 'Fixture: validation/expected/tasklist-approved.txt')
     groups.append(('Experiment 7  diff', r))
 
-    # Mission
     r = Results()
     r.ok('less (mission/brief.txt)', 'interactive — verify live: find HANDOVER-APPROVED, skip HANDOVER-OLD')
     check_exact(r, lab_root, 'work/mission/handover-note.txt', handover_correct)
@@ -468,15 +428,11 @@ def validate(lab_root, student_id):
                 'Fixture: validation/expected/mission-schedule-approved.txt')
     groups.append(('Independent Mission', r))
 
-    # Evidence integrity
     r = Results()
     check_evidence_preserved(r, lab_root, source)
     groups.append(('Evidence integrity', r))
 
     return groups
-
-
-# ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main():
     lab_root = Path.cwd()
@@ -528,7 +484,6 @@ def main():
     print()
 
     return 0 if not any_fail else 1
-
 
 if __name__ == '__main__':
     sys.exit(main())
