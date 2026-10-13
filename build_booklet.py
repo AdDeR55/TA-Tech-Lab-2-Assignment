@@ -26,7 +26,6 @@ ROOT   = Path(__file__).resolve().parent
 SRC_MD = ROOT / 'lab-book' / 'campus-it-handover-lab.md'
 PDF    = ROOT / 'lab-book' / 'campus-it-handover-lab.pdf'
 HTML   = ROOT / 'lab-book' / 'campus-it-handover-lab.html'
-
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
