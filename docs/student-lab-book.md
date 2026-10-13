@@ -1,5 +1,5 @@
 # Campus IT Service Desk Handover Lab
-**Lab 2 — Terminal Tools  ·  Avenfield University IT Support Centre**
+**Lab 2 — Terminal Tools  · AlgoUniversity's IT Support Centre**
 
 ---
 
@@ -7,7 +7,7 @@
 
 ### Your role
 
-You are the incoming technician at Avenfield University's IT Support Centre.
+You are the incoming technician at AlgoUniversity's IT Support Centre.
 The outgoing shift left three problems in the records:
 
 - The handover note has the **wrong room and start time** (copied from an old draft).
