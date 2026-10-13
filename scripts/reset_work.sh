@@ -24,6 +24,7 @@ if [[ ! -d "$WORK" ]]; then
   exit 0
 fi
 
+
 echo ""
 echo "This will permanently delete and regenerate:"
 echo "  $WORK"
