@@ -284,7 +284,6 @@ def main():
             print(f'  {key:<12} {val}')
         print('  ' + '-' * 34)
         print('  Write down ROOM and START — you need them in Experiment 2.')
-
     print('\nThen run:')
     print('  pwd')
     print('\nFollow the student lab book. No commands have been added to your shell history.')

@@ -1,7 +1,7 @@
 # Campus IT Service Desk Handover Lab
 
 > **Lab 2 — Terminal Tools**  
-> Scenario: Avenfield University campus IT Support Centre  
+> Scenario: AlgoUniversity campus IT Support Centre  
 > Tools: history · nano · less · sort · uniq · cut · diff
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=AdDeR55%2FTA-Tech-Lab-2-Assignment)

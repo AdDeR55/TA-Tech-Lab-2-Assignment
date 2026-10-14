@@ -482,7 +482,6 @@ def main():
     print('\n[!] history, nano and less require a live interactive demonstration.')
     print('    A full pass here does not replace the instructor walkthrough.')
     print()
-
     return 0 if not any_fail else 1
 
 if __name__ == '__main__':
