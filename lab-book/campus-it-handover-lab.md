@@ -1,5 +1,5 @@
 # Campus IT Service Desk Handover Lab
-### Lab 2 — Terminal Tools · Avenfield University IT Support Centre
+### Lab 2 — Terminal Tools · AlgoUniversity IT Support Centre
 
 ---
 
@@ -7,7 +7,7 @@
 
 ### Your role
 
-You are the incoming early-morning technician at the Avenfield University campus
+You are the incoming early-morning technician at the AlgoUniversity campus
 IT Support Centre. The help desk opens in 90 minutes. The outgoing night-shift
 technician left three problems in the records:
 
